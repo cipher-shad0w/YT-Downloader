@@ -28,15 +28,7 @@
 
 ## 🎬 Demo
 
-<!-- Add your demo video here -->
-*Demo video coming soon...*
-
-## 📱 Screenshots
-
-<div align="center">
-  <!-- Add screenshots here when available -->
-  <p><em>Screenshots will be added soon</em></p>
-</div>
+<img src="assets/app-demo.gif" alt="Demo" width="400"/>
 
 ## 🛠 Installation
 
