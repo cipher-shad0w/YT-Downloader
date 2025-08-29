@@ -1,4 +1,17 @@
-/.mypy_cache
-/README.md
-/out.json
-/yt_downloader.py
+# App Build
+*.app
+
+# Mac OS X
+*.DS_Store
+
+# Xcode
+*.pbxuser
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+*.xcuserstate
+xcuserdata
+project.xcworkspace
+*.zip
+Build/
+DerivedData
