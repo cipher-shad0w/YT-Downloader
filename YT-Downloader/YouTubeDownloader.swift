@@ -10,6 +10,7 @@ import Combine
 
 class YouTubeDownloader: ObservableObject {
     @Published var isDownloading: Bool = false
+    @Published var isCancelled: Bool = false
     @Published var downloadProgress: Int = 0
     @Published var downloadStatus: String = ""
     @Published var errorMessage: String = ""
@@ -223,7 +224,7 @@ class YouTubeDownloader: ObservableObject {
                     if self.downloadProcess?.terminationStatus == 0 {
                         self.downloadProgress = 100
                         self.downloadStatus = "Download completed successfully!"
-                    } else {
+                    } else if !self.isCancelled {
                         self.setError("Download failed")
                     }
                     self.isDownloading = false
@@ -268,15 +269,72 @@ class YouTubeDownloader: ObservableObject {
         }
     }
     
+    private func cleanupPartialDownload() {
+        let downloadsPath = NSString(string: "~/Downloads").expandingTildeInPath
+        
+        print("Attempting to clean up partial downloads in: \(downloadsPath)")
+        
+        // Use shell command to find and remove .part files
+        let process = Process()
+        process.executableURL = URL(fileURLWithPath: "/bin/sh")
+        process.arguments = ["-c", "find '\(downloadsPath)' -name '*.part' -type f -delete"]
+        
+        let pipe = Pipe()
+        process.standardOutput = pipe
+        process.standardError = pipe
+        
+        do {
+            try process.run()
+            process.waitUntilExit()
+            
+            let output = pipe.fileHandleForReading.readDataToEndOfFile()
+            let outputString = String(data: output, encoding: .utf8) ?? ""
+            
+            if process.terminationStatus == 0 {
+                print("Successfully cleaned up .part files")
+                if !outputString.isEmpty {
+                    print("Output: \(outputString)")
+                }
+            } else {
+                print("Failed to clean up .part files: \(outputString)")
+            }
+        } catch {
+            print("Error running cleanup command: \(error)")
+        }
+    }
+    
+    private func sanitizeFilename(_ filename: String) -> String {
+        // Remove or replace characters that are not allowed in filenames
+        let invalidChars = CharacterSet(charactersIn: ":/\\?%*|\"<>")
+        return filename.components(separatedBy: invalidChars).joined(separator: "_")
+    }
+    
     // MARK: - Public Utility Methods
     
     /// Cancel current download
     func cancelDownload() {
         downloadProcess?.terminate()
+
+        self.isCancelled = true
+
+        // Clean up partially downloaded files
+        cleanupPartialDownload()
+        
         DispatchQueue.main.async {
             self.isDownloading = false
+            self.downloadProgress = 0
             self.downloadStatus = "Download cancelled"
             self.downloadProcess = nil
+            
+            // Reset video information
+            self.videoTitle = ""
+            self.videoDuration = 0
+            self.videoSize = 0
+            self.videoUrl = ""
+            self.videoThumbnailUrl = ""
+            self.videoResolution = ""
+            self.isVideoInfoLoaded = false
+            self.errorMessage = ""
         }
     }
     

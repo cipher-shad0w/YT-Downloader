@@ -29,60 +29,6 @@ struct DefaultView: View {
                 .help("Fetch video information")
             }
             
-            // Video Information Section
-            if appState.isVideoInfoLoaded {
-                VStack(alignment: .leading, spacing: 8) {
-                    HStack {
-                        Text("Title:")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                        Text(appState.videoTitle)
-                            .font(.caption)
-                            .lineLimit(2)
-                        Spacer()
-                    }
-                    
-                    HStack {
-                        Text("Duration:")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                        Text(formatDuration(appState.videoDuration))
-                            .font(.caption)
-                        
-                        Spacer()
-                        
-                        Text("Size:")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                        Text("\(appState.videoSize) MB")
-                            .font(.caption)
-                        
-                        Spacer()
-                        
-                        Text("Resolution:")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                        Text(appState.videoResolution)
-                            .font(.caption)
-                    }
-                }
-                .padding()
-                .background(Color.gray.opacity(0.1))
-                .cornerRadius(8)
-                
-                // Download Button
-                Button(action: {
-                    downloadVideo()
-                }) {
-                    HStack {
-                        Image(systemName: "arrow.down.circle.fill")
-                        Text("Download")
-                    }
-                }
-                .disabled(appState.isDownloading)
-                .buttonStyle(.borderedProminent)
-            }
-            
             // Status and Error Messages
             if !appState.downloadStatus.isEmpty {
                 Text(appState.downloadStatus)

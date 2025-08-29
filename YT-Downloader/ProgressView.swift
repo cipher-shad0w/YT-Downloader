@@ -29,21 +29,6 @@ struct ProgressView: View {
                 }
                 Spacer()
             }
-            
-            // Video information (only show when loaded)
-            if appState.isVideoInfoLoaded && !appState.videoTitle.isEmpty {
-                HStack {
-                    Text("Resolution: \(appState.videoResolution)")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                    
-                    Spacer()
-                    
-                    Text("Size: \(appState.videoSize) MB")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                }
-            }
 
             // Progress bar and percentage (only show when downloading)
             if appState.isDownloading {

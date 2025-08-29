@@ -28,7 +28,9 @@ struct FinishView: View {
                 
                 Spacer()
             }
-            
+
+            Divider()
+
             // Video information
             VStack(alignment: .leading, spacing: 12) {
                 HStack {
@@ -41,9 +43,7 @@ struct FinishView: View {
                     .font(.caption)
                     .lineLimit(3)
                     .multilineTextAlignment(.leading)
-                
-                Divider()
-                
+                                
                 HStack {
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Duration:")
@@ -84,17 +84,13 @@ struct FinishView: View {
                     }
                 }
             }
-            .padding()
-            .background(Color.gray.opacity(0.1))
-            .cornerRadius(8)
-            
-            Spacer()
-            
-            // Action buttons - nur Download Another
+
+            Divider()
+
+            // Action buttons
             Button("Download Another") {
                 appState.reset()
             }
-            .buttonStyle(.borderedProminent)
             .font(.caption)
         }
         .padding()

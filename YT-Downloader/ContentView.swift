@@ -13,17 +13,23 @@ struct ContentView: View {
     var body: some View {
         GlassEffectContainer {
             VStack(alignment: .leading, spacing: 16) {
-                // Header
-                Text("YT Downloader")
-                    .font(.system(size: 12.5))
-                    .fontWeight(.semibold)
-                    .opacity(0.7)
+                HStack {
+                    Spacer()
+                    // Header
+                    Text("YT Downloader")
+                        .font(.system(size: 12.5))
+                        .fontWeight(.semibold)
+                        .opacity(0.7)
                     .padding(.top, 8)
+                    Spacer()
+                }
                 
                 Divider()
                 
                 VStack {
-                    if appState.isDownloadCompleted {
+                    if appState.hasError {
+                        ErrorView(appState: appState, errorMessage: appState.errorMessage)
+                    } else if appState.isDownloadCompleted {
                         FinishView(appState: appState)
                     } else if appState.isProcessingVideo {
                         ProgressView(appState: appState)
@@ -34,8 +40,9 @@ struct ContentView: View {
                 .frame(minHeight: 100)
             }
             .padding()
-            .frame(width: appState.isDownloadCompleted ? 350 : 300, 
-                   height: appState.isDownloadCompleted ? 250 : 200)
+            .frame(width: 300)
+            .frame(minHeight: appState.hasError ? nil : (appState.isDownloadCompleted ? 330 : 200),
+                   maxHeight: appState.hasError ? .infinity : (appState.isDownloadCompleted ? 330 : 200))
         }
     }
 }

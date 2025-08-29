@@ -32,9 +32,10 @@ class AppState: ObservableObject {
     @Published var downloadProgress = 0
     @Published var errorMessage = ""
     @Published var currentVideoURL: String = ""
-    @Published var isProcessingVideo = false  // New property to track if we're processing a video
-    @Published var isDownloadCompleted = false  // New property to track if download is completed
-    
+    @Published var isProcessingVideo = false
+    @Published var isDownloadCompleted = false
+    @Published var hasError = false
+
     // Video information
     @Published var videoTitle = ""
     @Published var videoDuration = 0
@@ -70,7 +71,11 @@ class AppState: ObservableObject {
         
         youtubeDownloader.$errorMessage
             .receive(on: DispatchQueue.main)
-            .assign(to: &$errorMessage)
+            .sink { [weak self] errorMessage in
+                self?.errorMessage = errorMessage
+                self?.hasError = !errorMessage.isEmpty
+            }
+            .store(in: &cancellables)
         
         youtubeDownloader.$videoTitle
             .receive(on: DispatchQueue.main)
@@ -119,8 +124,7 @@ class AppState: ObservableObject {
     
     func cancelDownload() {
         youtubeDownloader.cancelDownload()
-        isProcessingVideo = false
-        isDownloadCompleted = false
+        reset() // Reset everything to return to the start screen
     }
     
     func reset() {
@@ -128,5 +132,18 @@ class AppState: ObservableObject {
         currentVideoURL = ""
         isProcessingVideo = false
         isDownloadCompleted = false
+        hasError = false
+        errorMessage = ""
+        downloadStatus = ""
+        downloadProgress = 0
+        
+        // Reset video information
+        videoTitle = ""
+        videoDuration = 0
+        videoSize = 0
+        videoThumbnailUrl = ""
+        videoResolution = ""
+        isVideoInfoLoaded = false
+        isDownloading = false
     }
 }
