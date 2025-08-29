@@ -12,11 +12,12 @@ struct ErrorView: View {
     let errorMessage: String
     
     var body: some View {
-        VStack(spacing: 20) {
-            // Error Icon
-            Image(systemName: "exclamationmark.triangle.fill")
-                .font(.system(size: 40))
-                .foregroundColor(.red)
+        ScrollView {
+            VStack(spacing: 20) {
+                // Error Icon
+                Image(systemName: "exclamationmark.triangle.fill")
+                    .font(.system(size: 40))
+                    .foregroundColor(.red)
             
             // Error Title
             Text("An Error Occurred")
@@ -37,6 +38,7 @@ struct ErrorView: View {
             }
             .buttonStyle(.borderedProminent)
             .font(.caption)
+            }
         }
         .padding(20)
         .frame(maxWidth: .infinity)
